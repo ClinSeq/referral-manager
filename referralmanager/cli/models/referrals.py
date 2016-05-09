@@ -24,15 +24,15 @@ class AlasccaBloodReferral(Base):
     type_string = 'ALASCCA_blod'
 
     def __init__(self, line, separator=";"):
-	""" Create an object from a single line in a csv file
-	Element order:
-	pnr;rid;datum;tid;sign;hospital;county;blood1;blood2;blood3;filnamn
-	"""
-	elm = line.strip("\n").split(separator)
-	(self.pnr, self.crid, self.collection_date, self.collection_time, self.signed, self.hospital_code, self.county,
-	 self.barcode1, self.barcode2, self.barcode3, self.file_name) = elm
+        """ Create an object from a single line in a csv file
+        Element order:
+        pnr;rid;datum;tid;sign;hospital;county;blood1;blood2;blood3;filnamn
+        """
+        elm = line.strip("\n").split(separator)
+        (self.pnr, self.crid, self.collection_date, self.collection_time, self.signed, self.hospital_code, self.county,
+         self.barcode1, self.barcode2, self.barcode3, self.file_name) = elm
 
-	self.collection_date = datetime.strptime(self.collection_date, "%Y%m%d")
+        self.collection_date = datetime.strptime(self.collection_date, "%Y%m%d")
 
 
 class AlasccaTissueReferral(Base):
@@ -52,16 +52,16 @@ class AlasccaTissueReferral(Base):
     type_string = 'ALASCCA_colon_rektum'
 
     def __init__(self, line, separator=";"):
-	""" Create an object from a single line in a csv file
-	Element order:
-	pnr;rid;datum;strål_radio;snittningsdatum;PAD-nummer;sjukhus;län;tissue1;tissue2;kommentar;filnamn
-	"""
-	elm = line.strip("\n").split(separator)
-	(self.pnr, self.crid, self.collection_date, self.radiotherapy, self.sectioning_date, self.pad,
-	 self.hospital_code, self.county, self.barcode1, self.barcode2, self.comments, self.file_name) = elm
+        """ Create an object from a single line in a csv file
+        Element order:
+        pnr;rid;datum;strål_radio;snittningsdatum;PAD-nummer;sjukhus;län;tissue1;tissue2;kommentar;filnamn
+        """
+        elm = line.strip("\n").split(separator)
+        (self.pnr, self.crid, self.collection_date, self.radiotherapy, self.sectioning_date, self.pad,
+         self.hospital_code, self.county, self.barcode1, self.barcode2, self.comments, self.file_name) = elm
 
-	self.collection_date = datetime.strptime(self.collection_date, "%Y%m%d")
-	if self.sectioning_date == "0":
-	    self.sectioning_date = None
-	else:
-	    self.sectioning_date = datetime.strptime(self.sectioning_date, "%Y%m%d")
+        self.collection_date = datetime.strptime(self.collection_date, "%Y%m%d")
+        if self.sectioning_date == "0":
+            self.sectioning_date = None
+        else:
+            self.sectioning_date = datetime.strptime(self.sectioning_date, "%Y%m%d")

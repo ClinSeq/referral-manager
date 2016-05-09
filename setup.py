@@ -12,8 +12,8 @@ setup(name='referralmanager',
       packages=find_packages(exclude=('tests*', 'docs', 'examples')),
       install_requires=reqs,
       entry_points={
-	  'console_scripts': [
-	      'refman = referralmanager.cli.base:base'
-	  ]
+          'console_scripts': [
+              'refman = referralmanager.cli.base:base'
+          ]
       }
       )
