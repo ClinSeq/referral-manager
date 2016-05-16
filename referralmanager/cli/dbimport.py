@@ -42,26 +42,26 @@ def get_session(engine):
 def import_blood_referrals(session, searchdir, fileending="csv"):
     files = [f for f in os.listdir(searchdir) if f.endswith(fileending)]
     for fn in files:
-	with open(os.path.join(searchdir, fn), 'r') as f:
-	    header = f.readline()
-	    for ln in f:
-		ref = AlasccaBloodReferral(ln)
-		session.add(ref)
-		try:
-		    session.commit()
-		except IntegrityError:
-		    session.rollback()
+        with open(os.path.join(searchdir, fn), 'r') as f:
+            header = f.readline()
+            for ln in f:
+                ref = AlasccaBloodReferral(ln)
+                session.add(ref)
+                try:
+                    session.commit()
+                except IntegrityError:
+                    session.rollback()
 
 
 def import_tissue_referrals(session, searchdir, fileending="csv"):
     files = [f for f in os.listdir(searchdir) if f.endswith(fileending)]
     for fn in files:
-	with open(os.path.join(searchdir, fn), 'r') as f:
-	    header = f.readline()
-	    for ln in f:
-		ref = AlasccaTissueReferral(ln)
-		session.add(ref)
-		try:
-		    session.commit()
-		except IntegrityError:
-		    session.rollback()
+        with open(os.path.join(searchdir, fn), 'r') as f:
+            header = f.readline()
+            for ln in f:
+                ref = AlasccaTissueReferral(ln)
+                session.add(ref)
+                try:
+                    session.commit()
+                except IntegrityError:
+                    session.rollback()

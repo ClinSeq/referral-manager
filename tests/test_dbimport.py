@@ -8,6 +8,7 @@ from referralmanager.cli.models.referrals import AlasccaBloodReferral, AlasccaTi
 class TestDbImport(unittest.TestCase):
     def test_import_bloodreferral(self):
         engine = create_tables('sqlite:///:memory:')
+        #engine = create_tables('postgresql+psycopg2://referral_writer:inserter@127.0.0.1:5432/referrals')
         session = get_session(engine)
 
         blood_searchdir = os.path.join('tests', AlasccaBloodReferral.type_string)
@@ -21,6 +22,7 @@ class TestDbImport(unittest.TestCase):
 
     def test_import_tissuereferral(self):
         engine = create_tables('sqlite:///:memory:')
+        #engine = create_tables('postgresql+psycopg2://referral_writer:inserter@127.0.0.1:5432/referrals')
         session = get_session(engine)
 
         tissue_searchdir = os.path.join('tests', AlasccaTissueReferral.type_string)

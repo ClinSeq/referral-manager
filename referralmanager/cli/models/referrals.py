@@ -9,7 +9,7 @@ Base = declarative_base()
 
 
 class AlasccaBloodReferral(Base):
-    __tablename__ = "bloodreferrals"
+    __tablename__ = "alascca_bloodreferrals"
     crid = Column(Integer, primary_key=True, nullable=False)
     pnr = Column(String, nullable=False)
     collection_date = Column(Date, nullable=False)
@@ -36,7 +36,7 @@ class AlasccaBloodReferral(Base):
 
 
 class AlasccaTissueReferral(Base):
-    __tablename__ = "tissuereferrals"
+    __tablename__ = "alascca_tissuereferrals"
     crid = Column(Integer, primary_key=True, nullable=False)
     pnr = Column(String, nullable=False)
     collection_date = Column(Date, nullable=False)
