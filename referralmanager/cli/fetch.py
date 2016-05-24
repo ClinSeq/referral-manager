@@ -9,29 +9,21 @@ import click
 
 def get_login_details(login_file):
     try:
-        login_details = json.load(open(login_file))
+        login_details = json.load(login_file)
         username = login_details["username"]
         password = login_details["password"]
     except Exception, e:
-        logging.error("Failed to process login file: " + e)
+        logging.error("Failed to process login file.")
         raise
     return (username, password)
 
 
 def recursive_list(sftp_conn, dir):
-  curr_list = []
-  def appendToList(item):
-    curr_list.append(item)
-  sftp_conn.walktree(dir, appendToList, appendToList, appendToList)
-  return curr_list
-
-
-def match_extn(path, extn):
-  elems = path.split(".")
-  if len(elems) > 0 and elems[-1] == extn:
-    return True
-  else:
-    return False
+    curr_list = []
+    def appendToList(item):
+        curr_list.append(item)
+    sftp_conn.walktree(dir, appendToList, appendToList, appendToList)
+    return curr_list
 
 
 def setup_local_dir(local_data_dir):
@@ -71,7 +63,7 @@ def download_files(conn, remote_files, local_dir):
 
 
 @click.command()
-@click.option('--login_file', type=str, default=os.path.expanduser("~/.refslogin"))
+@click.option('--login-file', type=str, default=os.path.expanduser("~/.refslogin"))
 @click.option('--local-data-dir', type=str, required=True,
               default='')
 @click.option('--remote-data-dir', type=str, required=True)
@@ -86,13 +78,14 @@ def fetch(ctx, login_file, local_data_dir, remote_data_dir):
 
     logging.info("Running fetch: Fetching from {} to {}".format(remote_data_dir, local_data_dir))
 
-    (username, password) = get_login_details(login_file)
+    with open(login_file) as f:
+        (username, password) = get_login_details(f)
 
     # Identify all relevant remote files:
     conn = pysftp.Connection('kundftp.biobank.ki.se', username=username, password=password)
     remote_listing = recursive_list(conn, remote_data_dir)
-    remote_csv = filter(lambda curr_path: match_extn(curr_path, "csv"), remote_listing)
-    remote_pdf = filter(lambda curr_path: match_extn(curr_path, "pdf"), remote_listing)
+    remote_csv = filter(lambda curr_path: curr_path.endswith('.csv'), remote_listing)
+    remote_pdf = filter(lambda curr_path: curr_path.endswith('.pdf'), remote_listing)
 
     # Check and setup specified local directory:
     (csv_dir, pdf_dir) = setup_local_dir(local_data_dir)
