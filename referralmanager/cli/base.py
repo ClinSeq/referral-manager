@@ -2,6 +2,7 @@ import logging
 import click
 
 from .dbimport import dbimport as dbimport_cmd
+from .fetch import fetch as fetch_cmd
 
 
 @click.group()
@@ -27,3 +28,4 @@ def setup_logging(loglevel="INFO"):
 
 
 base.add_command(dbimport_cmd)
+base.add_command(fetch_cmd)
