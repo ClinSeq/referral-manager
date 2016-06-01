@@ -1,3 +1,4 @@
+import importlib
 import json
 import logging
 import os
@@ -13,19 +14,19 @@ from referralmanager.cli.models.referrals import Base, AlasccaBloodReferral, Ala
 @click.command()
 @click.option('--dbcred', type=click.File('r'), required=True)
 @click.option('--local-data-dir', type=str, required=True)
+@click.option('--referral-type', type=click.Choice(['AlasccaBloodReferral', 'AlasccaTissueReferral']), required=True)
 @click.pass_context
-def dbimport(ctx, dbcred, local_data_dir):
+def dbimport(ctx, dbcred, local_data_dir, referral_type):
     logging.info("Running database import from dir {}".format(local_data_dir))
     cred_conf = json.load(dbcred)
 
     engine = create_tables(cred_conf['dburi'])
     session = get_session(engine)
 
-    blood_searchdir = os.path.join(local_data_dir, AlasccaBloodReferral.type_string)
-    import_blood_referrals(session, blood_searchdir)
+    module = importlib.import_module('referralmanager.cli.models.referrals')
+    referral_class = getattr(module, referral_type)
 
-    tissue_searchdir = os.path.join(local_data_dir, AlasccaTissueReferral.type_string)
-    import_tissue_referrals(session, tissue_searchdir)
+    import_referrals(session, local_data_dir, referral_class)
 
 
 def create_tables(uri):
@@ -39,27 +40,13 @@ def get_session(engine):
     return Session()
 
 
-def import_blood_referrals(session, searchdir, fileending="csv"):
+def import_referrals(session, searchdir, referral_class, fileending="csv"):
     files = [f for f in os.listdir(searchdir) if f.endswith(fileending)]
     for fn in files:
         with open(os.path.join(searchdir, fn), 'r') as f:
             header = f.readline()
             for ln in f:
-                ref = AlasccaBloodReferral(ln)
-                session.add(ref)
-                try:
-                    session.commit()
-                except IntegrityError:
-                    session.rollback()
-
-
-def import_tissue_referrals(session, searchdir, fileending="csv"):
-    files = [f for f in os.listdir(searchdir) if f.endswith(fileending)]
-    for fn in files:
-        with open(os.path.join(searchdir, fn), 'r') as f:
-            header = f.readline()
-            for ln in f:
-                ref = AlasccaTissueReferral(ln)
+                ref = referral_class(ln)
                 session.add(ref)
                 try:
                     session.commit()
