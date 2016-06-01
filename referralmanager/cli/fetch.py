@@ -2,6 +2,7 @@ import json
 import logging
 import os
 import pysftp
+import pdb
 import sys
 
 import click
@@ -33,7 +34,8 @@ def setup_local_dir(local_data_dir):
     if not os.path.exists(local_data_dir):
         logging.error("Error: Specified local data directory does not exist: " +
                       local_data_dir)
-        sys.exit(1)
+        # FIXME: Is this the right approach (raising an IOError)?
+        raise IOError("Local data directory does not exist: " + local_data_dir)
 
     # Make local csv and pdf directories if they do not exist:
     csv_dir = os.path.join(local_data_dir, "csv")
@@ -63,22 +65,22 @@ def download_files(conn, remote_files, local_dir):
 
 
 @click.command()
-@click.option('--login-file', type=str, default=os.path.expanduser("~/.refslogin"))
+@click.option('--referrals-login', type=str, default=os.path.expanduser("~/.refslogin"),
+              help="Location of file with login credentials for the referrals server.")
 @click.option('--local-data-dir', type=str, required=True,
               default='')
 @click.option('--remote-data-dir', type=str, required=True)
 @click.pass_context
-def fetch(ctx, login_file, local_data_dir, remote_data_dir):
+def fetch(ctx, referrals_login, local_data_dir, remote_data_dir):
     '''Copy new referrals from the specified folder on the remote sftp server to the local data directory.
 
     Recursively identify all csv and pdf files in the remote data folder and if any are new then copy them
     to respective csv and pdf folders within the local data folder. Generates the csv and pdf folders if
     they do not already exist.
 '''
-
     logging.info("Running fetch: Fetching from {} to {}".format(remote_data_dir, local_data_dir))
 
-    with open(login_file) as f:
+    with open(referrals_login) as f:
         (username, password) = get_login_details(f)
 
     # Identify all relevant remote files:
@@ -103,98 +105,3 @@ def fetch(ctx, login_file, local_data_dir, remote_data_dir):
     # Download the resulting files to the respective local csv and pdf folders:
     download_files(conn, csv_to_download, csv_dir)
     download_files(conn, pdf_to_download, pdf_dir)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
