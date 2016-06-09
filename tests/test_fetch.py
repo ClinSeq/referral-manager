@@ -1,12 +1,25 @@
 import unittest
+import pdb
 import sys
-import pysftp
 from mock import mock_open, patch, Mock
 
 from referralmanager.cli.fetch import fetch, download_files, setup_local_dir, recursive_list, get_login_details
+from referralmanager.cli.base import base
 
+from click.testing import CliRunner
 
 class TestFetch(unittest.TestCase):
+    # Just test that the "base" click function can be run without producing an error:
+    @patch('referralmanager.cli.base.raven')
+    def test_base(self, mock_raven):
+        # Mock the raven Client class constructor:
+        mock_raven.Client = Mock()
+
+        # Create mock objects to be passed as arguments to base:
+        with patch('referralmanager.cli.base.open', mock_open(read_data='{"public_key":"na", "secret":"na", "project":"na"}'), create=True):
+            runner = CliRunner()
+            result = runner.invoke(base, ["--sentry-login", "dummyFilename.txt", "--loglevel", "INFO", "fetch", "--help"])
+            self.assertEqual(result.exit_code, 0)
 
     def test_get_login_details_real_file(self):
         with patch('test_fetch.open', mock_open(read_data='{"username":"testuser", "password":"testpassword"}'), create=True):
