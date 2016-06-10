@@ -2,6 +2,7 @@ import importlib
 import json
 import logging
 import os
+import pdb
 
 import click
 from sqlalchemy import create_engine
@@ -46,7 +47,8 @@ def import_referrals(session, searchdir, referral_class, fileending="csv"):
         with open(os.path.join(searchdir, fn), 'r') as f:
             header = f.readline()
             for ln in f:
-                ref = referral_class(ln)
+                unicode_ln = ln.decode("latin_1")
+                ref = referral_class(unicode_ln)
                 session.add(ref)
                 try:
                     session.commit()
