@@ -61,7 +61,8 @@ class AlasccaTissueReferral(Base):
          self.hospital_code, self.county, self.barcode1, self.barcode2, self.comments, self.file_name) = elm
 
         self.collection_date = datetime.strptime(self.collection_date, "%Y%m%d")
-        if self.sectioning_date == "0":
-            self.sectioning_date = None
-        else:
+        try:
             self.sectioning_date = datetime.strptime(self.sectioning_date, "%Y%m%d")
+        except ValueError:
+            # Currently just setting the sectioning date to None if it is not a valid datetime value:
+            self.sectioning_date = None
