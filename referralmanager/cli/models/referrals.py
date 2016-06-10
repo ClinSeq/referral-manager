@@ -7,8 +7,6 @@ from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
 
-import pdb
-
 
 class AlasccaBloodReferral(Base):
     __tablename__ = "alascca_bloodreferrals"

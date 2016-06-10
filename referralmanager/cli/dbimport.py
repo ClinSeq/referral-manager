@@ -2,7 +2,6 @@ import importlib
 import json
 import logging
 import os
-import pdb
 
 import click
 from sqlalchemy import create_engine
