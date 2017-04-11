@@ -34,6 +34,12 @@ class AlasccaBloodReferral(Base):
 
         self.collection_date = datetime.strptime(self.collection_date, "%Y%m%d")
 
+        # If the signed field is not an integer (e.g. due to missing signature on the referral), change it to -1
+        try:
+            self.signed = int(self.signed)
+        except ValueError:
+            self.signed = -1
+
 
 class AlasccaTissueReferral(Base):
     __tablename__ = "alascca_tissuereferrals"
