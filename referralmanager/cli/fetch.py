@@ -13,7 +13,7 @@ def get_login_details(login_file):
         login_details = json.load(login_file)
         username = login_details["username"]
         password = login_details["password"]
-    except Exception, e:
+    except Exception as e:
         logging.error("Failed to process login file.")
         raise
     return (username, password)
@@ -82,12 +82,11 @@ def fetch(ctx, referrals_login, local_data_dir, remote_data_dir):
 
     with open(referrals_login) as f:
         (username, password) = get_login_details(f)
-
     # Identify all relevant remote files:
     conn = pysftp.Connection('kundftp.biobank.ki.se', username=username, password=password)
     remote_listing = recursive_list(conn, remote_data_dir)
-    remote_csv = filter(lambda curr_path: curr_path.endswith('.csv'), remote_listing)
-    remote_pdf = filter(lambda curr_path: curr_path.endswith('.pdf'), remote_listing)
+    remote_csv = list(filter(lambda curr_path: curr_path.endswith('.csv'), remote_listing))
+    remote_pdf = list(filter(lambda curr_path: curr_path.endswith('.pdf'), remote_listing))
 
     # Check and setup specified local directory:
     (csv_dir, pdf_dir) = setup_local_dir(local_data_dir)
@@ -98,9 +97,11 @@ def fetch(ctx, referrals_login, local_data_dir, remote_data_dir):
     local_pdf = set([filename for dir_path, dir_name, filenames in
                      os.walk(pdf_dir) for filename in filenames])
 
+
     # Obtain a list of csv and pdf files present remotely but not locally:
-    csv_to_download = filter(lambda remote_file: not(os.path.split(remote_file)[1] in local_csv), remote_csv)
-    pdf_to_download = filter(lambda remote_file: not(os.path.split(remote_file)[1] in local_pdf), remote_pdf)
+    csv_to_download = list(filter(lambda remote_file: not(os.path.split(remote_file)[1] in local_csv), remote_csv))
+    pdf_to_download = list(filter(lambda remote_file: not(os.path.split(remote_file)[1] in local_pdf), remote_pdf))
+
 
     # Download the resulting files to the respective local csv and pdf folders:
     download_files(conn, csv_to_download, csv_dir)

@@ -18,6 +18,8 @@ E.g.:
 `refman fetch --local-data-dir /nfs/ALASCCA/referrals/blood --remote-data-dir ALASCCA/Scannade_remisser/ALASCCA_blod`
 `refman fetch --local-data-dir /nfs/ALASCCA/referrals/tissue --remote-data-dir ALASCCA/Scannade_remisser/ALASCCA_colon_rektum`
 
+`refman --sentry-login <sentrylogin> fetch --referrals-login <remote ftp login.json> --local-data-dir /nfs/PROBIO/referraldb/remote_files --remote-data-dir /ProBio2/Scannade_remisser`
+
 These example commands would fetch referrals from the remote `ALASCCA_blood` and `ALASCCA_colon_rektum` directories.
 
 ### `dbimport`
@@ -26,6 +28,8 @@ This subcommand imports the information from the local csv files (in a specified
 
 E.g.:
 `refman dbimport --dbcred /nfs/ALASCCA/clinseq-referraldb-config.json --local-data-dir /nfs/ALASCCA/referrals/blood --referral-type AlasccaBloodReferral`
+
+`refman --sentry-login <sentry login file> dbimport --dbcred <db url config.json> --local-data-dir /nfs/PROBIO/referraldb/remote_files/csv --referral-type ProbioBloodReferral`
 
 This example finds CSV files in the directory /nfs/ALASCCA/referrals/blood and imports any new data into the tables corresponding to the AlasccaBloodReferral type. `/nfs/ALASCCA/clinseq-referraldb-config.json` should be a json file like so:
 

@@ -9,7 +9,7 @@ from .dbimport import dbimport as dbimport_cmd
 from .fetch import fetch as fetch_cmd
 import raven
 
-
+print('Welcome......')
 @click.group()
 @click.option('--sentry-login', type=str, default=os.path.expanduser("~/.sentrylogin"),
               help="Location of file with sentry user and project details.")

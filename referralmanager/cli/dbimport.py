@@ -7,14 +7,14 @@ import click
 from sqlalchemy import create_engine
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import sessionmaker
-
-from referralmanager.cli.models.referrals import Base, AlasccaBloodReferral, AlasccaTissueReferral
+import csv
+from referralmanager.cli.models.referrals import Base, AlasccaBloodReferral, AlasccaTissueReferral, PsffBloodReferral, ProbioBloodReferral
 
 
 @click.command()
 @click.option('--dbcred', type=click.File('r'), required=True)
 @click.option('--local-data-dir', type=str, required=True)
-@click.option('--referral-type', type=click.Choice(['AlasccaBloodReferral', 'AlasccaTissueReferral']), required=True)
+@click.option('--referral-type', type=click.Choice(['ProbioBloodReferral', 'PsffBloodReferral', 'AlasccaBloodReferral', 'AlasccaTissueReferral']), required=True)
 @click.pass_context
 def dbimport(ctx, dbcred, local_data_dir, referral_type):
     logging.info("Running database import from dir {}".format(local_data_dir))
@@ -43,13 +43,13 @@ def get_session(engine):
 def import_referrals(session, searchdir, referral_class, fileending="csv"):
     files = [f for f in os.listdir(searchdir) if f.endswith(fileending)]
     for fn in files:
-        with open(os.path.join(searchdir, fn), 'r') as f:
-            header = f.readline()
-            for ln in f:
-                unicode_ln = ln.decode("latin_1")
-                ref = referral_class(unicode_ln)
-                session.add(ref)
+        with open(os.path.join(searchdir, fn), 'r', encoding='latin_1') as f:
+            row_pointer = csv.DictReader(f, delimiter =';')
+            for each_row in row_pointer:
+                each_row = dict(each_row)
+                ref = referral_class(each_row)
                 try:
+                    session.add(ref)
                     session.commit()
                 except IntegrityError:
                     session.rollback()
