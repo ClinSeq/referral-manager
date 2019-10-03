@@ -67,6 +67,7 @@ class PsffBloodReferral(Base):
     blood4 = Column(String, nullable=False)
     comment = Column(String, nullable=False)
     filnamn = Column(String, nullable=False)
+    cdk = Column(String, nullable=False)
     def __init__(self, row_dict):
         """ Create an object from a single line in a csv file
         Element order:
@@ -83,6 +84,7 @@ class PsffBloodReferral(Base):
         self.blood4 = row_dict.get('blood4', None)
         self.comment = row_dict.get('comment', None)
         self.filnamn = row_dict.get('filnamn', None)
+        self.cdk = row_dict.get('cdk', None)
 
 
         self.datum = datetime.strptime(self.datum, "%Y%m%d")
